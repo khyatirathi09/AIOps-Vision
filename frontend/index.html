@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AIOps Vision | Model Operations</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand"><div class="brand-mark">A</div><div><strong>AIOps Vision</strong><small>MODEL OPERATIONS</small></div></div>
+      <div class="nav-label">WORKSPACE</div>
+      <a class="nav-item active" href="#overview"><span>▦</span> Overview</a>
+      <a class="nav-item" href="#predict"><span>✳</span> Make prediction</a>
+      <a class="nav-item" href="#history"><span>◷</span> Prediction history</a>
+      <div class="sidebar-bottom"><div class="status-dot"></div><div><strong>API service</strong><small id="sidebar-status">Checking status…</small></div></div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar"><div><p class="eyebrow">AI / DEVOPS WORKSPACE</p><h1>Model operations</h1><p class="subhead">Monitor, validate and interact with your deployed machine-learning model.</p></div><div class="top-right"><span class="live-pill"><i></i> LIVE STATUS</span><div class="avatar">AD</div></div></header>
+
+      <section id="overview">
+        <div class="section-heading"><div><h2>Overview</h2><p>Your model's current operational snapshot.</p></div><button class="secondary-btn" id="refresh-btn">↻ Refresh data</button></div>
+        <div class="metrics-grid">
+          <article class="metric-card"><div class="metric-top"><span>Total predictions</span><span class="metric-icon purple">↗</span></div><strong id="total-predictions">0</strong><small>Predictions recorded in database</small></article>
+          <article class="metric-card"><div class="metric-top"><span>Validation accuracy</span><span class="metric-icon green">✓</span></div><strong id="accuracy">--%</strong><small>Held-out test dataset</small></article>
+          <article class="metric-card"><div class="metric-top"><span>Model version</span><span class="metric-icon orange">◇</span></div><strong id="model-version">v1.0</strong><small id="algorithm">Logistic Regression</small></article>
+          <article class="metric-card"><div class="metric-top"><span>Service health</span><span class="metric-icon green">⌁</span></div><strong class="health-value" id="health-value">Checking</strong><small>Backend API availability</small></article>
+        </div>
+      </section>
+
+      <section class="content-grid">
+        <article class="panel model-panel"><div class="panel-header"><div><h2>Model information</h2><p>Deployment and validation details</p></div><span class="pass-badge" id="quality-gate">QUALITY PASS</span></div><div class="model-name"><div class="model-symbol">✳</div><div><strong id="model-name">Iris Species Classifier</strong><small>Classification · Scikit-learn</small></div></div><div class="info-list"><div><span>Algorithm</span><strong id="model-algorithm">--</strong></div><div><span>Dataset</span><strong id="dataset">--</strong></div><div><span>Last trained</span><strong id="trained-at">--</strong></div></div><button class="primary-btn full-btn" id="retrain-btn">⟳ &nbsp; Retrain & validate model</button><p class="hint">Retraining runs the quality gate before updating the saved model artifact.</p><div id="retrain-message" class="message" aria-live="polite"></div></article>
+        <article class="panel chart-panel"><div class="panel-header"><div><h2>Prediction distribution</h2><p>Recorded predictions by class</p></div><span class="chart-tag">DATABASE</span></div><div class="chart-wrap"><canvas id="distribution-chart"></canvas><div id="chart-empty" class="chart-empty">Make a prediction to populate this chart.</div></div><div class="legend-note"><span><i class="legend-dot violet"></i> Setosa</span><span><i class="legend-dot teal"></i> Versicolor</span><span><i class="legend-dot amber"></i> Virginica</span></div></article>
+      </section>
+
+      <section class="panel prediction-panel" id="predict"><div class="panel-header"><div><h2>Run a prediction</h2><p>Enter flower measurements in centimeters to classify the Iris species.</p></div><span class="endpoint-tag">POST /api/predict</span></div>
+        <form id="prediction-form"><div class="input-grid">
+          <label>Sepal length <span>cm</span><input type="number" name="sepal_length" min="0.1" max="10" step="0.1" value="5.1" required></label>
+          <label>Sepal width <span>cm</span><input type="number" name="sepal_width" min="0.1" max="10" step="0.1" value="3.5" required></label>
+          <label>Petal length <span>cm</span><input type="number" name="petal_length" min="0.1" max="10" step="0.1" value="1.4" required></label>
+          <label>Petal width <span>cm</span><input type="number" name="petal_width" min="0.1" max="10" step="0.1" value="0.2" required></label>
+        </div><div class="form-bottom"><p>Example values are prefilled. You can change them before submitting.</p><button class="primary-btn" id="predict-btn" type="submit">Generate prediction <span>→</span></button></div></form>
+        <div id="prediction-result" class="prediction-result hidden" aria-live="polite"></div>
+      </section>
+
+      <section class="panel history-panel" id="history"><div class="panel-header"><div><h2>Recent predictions</h2><p>Latest model inferences stored in SQLite.</p></div><span class="chart-tag">LATEST 8</span></div><div class="table-scroll"><table><thead><tr><th>TIME (UTC)</th><th>SEPAL (L × W)</th><th>PETAL (L × W)</th><th>PREDICTED CLASS</th><th>MODEL</th></tr></thead><tbody id="history-body"><tr><td colspan="5" class="empty-row">Loading prediction history…</td></tr></tbody></table></div></section>
+      <footer><span>AIOps Vision · PS4 AI DevOps Mini Project</span><span>Built with Flask · Scikit-learn · SQLite</span></footer>
+    </main>
+  </div>
+  <script src="/app.js"></script>
+</body>
+</html>

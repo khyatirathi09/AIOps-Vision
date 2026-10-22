@@ -1,0 +1,7 @@
+services:
+  aiops-vision:
+    build: .
+    container_name: aiops-vision
+    ports:
+      - "5000:5000"
+    restart: unless-stopped

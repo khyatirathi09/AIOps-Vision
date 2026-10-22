@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+.pytest_cache/
+*.py[cod]
+aiops.db
+models/*.joblib
+models/model_metadata.json
+.env
+
+.venv-win/

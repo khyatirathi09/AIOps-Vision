@@ -4,6 +4,7 @@ pipeline {
 
     environment {
         PYTHON = 'C:\\Users\\Lenovo\\AppData\\Local\\Python\\bin\\python.exe'
+        DOCKER = 'C:\\Users\\Lenovo\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\docker.exe'
     }
 
     stages {
@@ -15,8 +16,8 @@ pipeline {
 
         stage('Check Docker Access') {
             steps {
-                bat 'docker --version'
-                bat 'docker info'
+                bat '"%DOCKER%" --version'
+                bat '"%DOCKER%" info'
             }
         }
 

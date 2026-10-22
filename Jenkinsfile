@@ -13,6 +13,13 @@ pipeline {
             }
         }
 
+        stage('Check Docker Access') {
+            steps {
+                bat 'docker --version'
+                bat 'docker info'
+            }
+        }
+
         stage('Install Dependencies') {
             steps {
                 bat '"%PYTHON%" -m pip install -r requirements.txt'
@@ -34,7 +41,7 @@ pipeline {
 
     post {
         success {
-            echo 'AIOps Vision pipeline completed successfully!'
+            echo 'AIOps Vision CI pipeline completed successfully!'
         }
         failure {
             echo 'Pipeline failed. Check the Console Output.'

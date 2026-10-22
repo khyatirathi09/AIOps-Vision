@@ -1,45 +1,43 @@
+
 pipeline {
     agent any
 
+    environment {
+        PYTHON = 'C:\\Users\\Lenovo\\AppData\\Local\\Python\\bin\\python.exe'
+    }
+
     stages {
-        stage('Checkout') {
+        stage('Check Python') {
             steps {
-                checkout scm
+                bat '"%PYTHON%" --version'
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                bat 'python -m pip install -r requirements.txt'
+                bat '"%PYTHON%" -m pip install -r requirements.txt'
             }
         }
 
-        stage('Train and Validate Model') {
+        stage('Train AI Model') {
             steps {
-                bat 'python train_model.py'
+                bat '"%PYTHON%" train_model.py'
             }
         }
 
-        stage('Automated Tests') {
+        stage('Run Automated Tests') {
             steps {
-                bat 'python -m pytest -q'
-            }
-        }
-
-        stage('Build Docker Image') {
-            steps {
-                bat 'docker build -t aiops-vision:latest .'
+                bat '"%PYTHON%" -m pytest -v'
             }
         }
     }
 
     post {
         success {
-            echo 'AIOps Vision CI pipeline completed successfully.'
-            archiveArtifacts artifacts: 'models/model_metadata.json', fingerprint: true
+            echo 'AIOps Vision pipeline completed successfully!'
         }
         failure {
-            echo 'Pipeline failed. Review the stage logs and fix the issue.'
+            echo 'Pipeline failed. Check the Console Output.'
         }
     }
 }

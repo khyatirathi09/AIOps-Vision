@@ -9,6 +9,7 @@ pipeline {
     }
 
     stages {
+
         stage('Check Python') {
             steps {
                 bat '"%PYTHON%" --version'
@@ -50,16 +51,32 @@ pipeline {
             steps {
                 bat '''
                     "%DOCKER%" stop aiops-vision
+                    if errorlevel 1 exit /b 1
+
                     "%DOCKER%" rm aiops-vision
+                    if errorlevel 1 exit /b 1
+
                     "%DOCKER%" run -d --name aiops-vision --restart unless-stopped -p 5000:5000 %IMAGE_NAME%:%BUILD_NUMBER%
+                    if errorlevel 1 exit /b 1
                 '''
             }
         }
 
         stage('Verify Deployment') {
             steps {
-                bat 'timeout /t 10 /nobreak'
+                script {
+                    sleep(time: 10, unit: 'SECONDS')
+                }
+
                 bat '"%DOCKER%" ps --filter name=aiops-vision'
+
+                bat '''
+                    "%DOCKER%" inspect --format="{{.State.Running}}" aiops-vision > container_status.txt
+                    if errorlevel 1 exit /b 1
+                    findstr /i "true" container_status.txt
+                    if errorlevel 1 exit /b 1
+                '''
+
                 bat '"%DOCKER%" logs --tail 30 aiops-vision'
             }
         }
@@ -68,10 +85,14 @@ pipeline {
     post {
         success {
             echo 'AIOps Vision CI/CD pipeline completed successfully!'
-            echo 'Docker image built and container deployed.'
+            echo 'Model training and automated tests passed.'
+            echo 'Docker image built and container deployment verified.'
+            echo 'Dashboard URL: http://localhost:5000'
         }
+
         failure {
-            echo 'Pipeline failed. Check Console Output and Docker logs.'
+            echo 'Pipeline failed. Check the failed stage in Console Output.'
+            echo 'Check Docker logs if the container failed to start.'
         }
     }
 }

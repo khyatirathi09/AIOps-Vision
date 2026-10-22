@@ -38,11 +38,18 @@ pipeline {
                 bat '"%PYTHON%" -m pytest -v'
             }
         }
+
+        stage('Build Docker Image') {
+            steps {
+                bat '"%DOCKER%" build -t aiops-vision-ci:%BUILD_NUMBER% .'
+            }
+        }
     }
 
     post {
         success {
             echo 'AIOps Vision CI pipeline completed successfully!'
+            echo 'Docker image built successfully.'
         }
         failure {
             echo 'Pipeline failed. Check the Console Output.'
